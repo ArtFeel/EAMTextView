@@ -180,19 +180,20 @@ static CGFloat const EAMTextViewPlaceholderInset = 8.0f;
             newFrame.size.height += heightDifference;
             
             // Animation blocks
+            __weak typeof(self) weakSelf = self;
             void (^animationBlock)() = ^{
-                if ([self.delegate respondsToSelector:@selector(textView:willChangeFromHeight:toHeight:)]) {
-                    [self.delegate textView:self
-                       willChangeFromHeight:oldHeight
-                                   toHeight:newHeight];
+                if ([weakSelf.delegate respondsToSelector:@selector(textView:willChangeFromHeight:toHeight:)]) {
+                    [weakSelf.delegate textView:weakSelf
+                           willChangeFromHeight:oldHeight
+                                       toHeight:newHeight];
                 }
-                self.frame = newFrame;
+                weakSelf.frame = newFrame;
             };
             void (^completionBlock)(BOOL) = ^(BOOL finished) {
-                if ( [self.delegate respondsToSelector:@selector(textView:didChangeFromHeight:toHeight:)] ) {
-                    [self.delegate textView:self
-                        didChangeFromHeight:oldHeight
-                                   toHeight:newHeight];
+                if ( [weakSelf.delegate respondsToSelector:@selector(textView:didChangeFromHeight:toHeight:)] ) {
+                    [weakSelf.delegate textView:weakSelf
+                            didChangeFromHeight:oldHeight
+                                       toHeight:newHeight];
                 }
             };
             
@@ -201,7 +202,7 @@ static CGFloat const EAMTextViewPlaceholderInset = 8.0f;
                 [UIView animateWithDuration:self.autoresizingAnimationDuration
                                       delay:0.0f
                                     options:UIViewAnimationOptionAllowUserInteraction |
-                 UIViewAnimationOptionBeginFromCurrentState
+                                            UIViewAnimationOptionBeginFromCurrentState
                                  animations:animationBlock
                                  completion:completionBlock];
             } else {
